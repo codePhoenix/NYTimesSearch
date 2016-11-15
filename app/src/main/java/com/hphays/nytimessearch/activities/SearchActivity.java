@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +17,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
+import android.support.v7.widget.SearchView;
+
 
 import com.hphays.nytimessearch.Article;
 import com.hphays.nytimessearch.ArticleArrayAdapter;
@@ -76,9 +80,54 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-        return true;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_search, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // perform query here
+
+                AsyncHttpClient client = new AsyncHttpClient();
+                String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+
+                RequestParams params = new RequestParams();
+
+                params.put("api-key", "f00016086fc44568868f0e0ce191376d");
+                params.put("page", 0);
+                params.put("q", query);
+
+                client.get(url, params, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        Log.d("DEBUG", response.toString());
+
+                        JSONArray articleJsonResults = null;
+
+                        try{
+                            articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                            adapter.addAll(Article.fromJSONArray(articleJsonResults));
+                            Log.d("DEBUG", articles.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
+                // see https://code.google.com/p/android/issues/detail?id=24599
+                searchView.clearFocus();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -89,9 +138,9 @@ public class SearchActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+     /*   if (id == R.id.action_settings) {
             return true;
-        }
+        } */
 
         return super.onOptionsItemSelected(item);
     }
