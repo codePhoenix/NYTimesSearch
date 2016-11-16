@@ -4,4 +4,16 @@
     <string name="searchHint">Enter search query</string>
     <string name="btnSearch">Search</string>
     <string name="title_activity_article">ArticleActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dateLabel">Begin Date</string>
+    <string name="newsDeskLabel">News Desk Values</string>
+    <string name="artsCheckbox">Arts</string>
+    <string name="sportsCheckbox">Sports</string>
+    <string name="fashionCheckbox">Fashion and Style</string>
+    <string name="saveBtn">Save</string>
+    <string name="sortOrder">Sort Order</string>
+    <string name="oldest">Oldest</string>
+    <string name="newest">Newest</string>
 </resources>

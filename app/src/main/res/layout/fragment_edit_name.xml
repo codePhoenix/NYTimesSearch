@@ -1,0 +1,91 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_name"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:layout_gravity="center" android:orientation="vertical"  >
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="@string/dateLabel"
+        android:ems="10"
+        android:id="@+id/beginDateLabel"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:background="@android:color/transparent"/>
+
+    <DatePicker
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:id="@+id/datePicker" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/sortOrder"
+        android:text="@string/sortOrder"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:background="@android:color/transparent"/>
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <RadioButton
+        android:text="@string/oldest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/oldest" />
+
+    <RadioButton
+        android:text="@string/newest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/newest" />
+</RadioGroup>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/newsDeskLabel"
+        android:text="@string/newsDeskLabel"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:background="@android:color/transparent"/>
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/artsCheckbox"
+        android:id="@+id/arts" />
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fashionCheckbox"
+        android:id="@+id/fashion" />
+
+    <CheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sportsCheckbox"
+        android:id="@+id/sports" />
+
+    <Button
+        android:text="@string/saveBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saveBtn" />
+
+</LinearLayout>

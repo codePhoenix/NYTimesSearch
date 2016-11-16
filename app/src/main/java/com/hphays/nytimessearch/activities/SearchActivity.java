@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.*;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -175,5 +176,12 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void onDetailClick(View view) {
+        // create an intent to display the search options fragment
+        Intent i = new Intent(getApplicationContext(), FragmentActivity.class);
+        // launch the activity
+        startActivity(i);
     }
 }
