@@ -1,5 +1,6 @@
 package com.hphays.nytimessearch.activities;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -24,6 +25,7 @@ import android.os.Parcel;
 
 import com.hphays.nytimessearch.Article;
 import com.hphays.nytimessearch.ArticleArrayAdapter;
+import com.hphays.nytimessearch.EndlessScrollListener;
 import com.hphays.nytimessearch.R;
 import com.hphays.nytimessearch.SearchFilters;
 import com.loopj.android.http.AsyncHttpClient;
@@ -43,6 +45,7 @@ import layout.SearchFiltersDialogFragment;
 public class SearchActivity extends AppCompatActivity implements SearchFiltersDialogFragment.EditNameDialogListener {
 
     EditText etQuery;
+    String queryString;
     GridView gvResults;
     Button btnSearch;
 
@@ -89,6 +92,17 @@ public class SearchActivity extends AppCompatActivity implements SearchFiltersDi
                 startActivity(i);
             }
         });
+
+        gvResults.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public boolean onLoadMore(int page, int totalItemsCount) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to your AdapterView
+                loadNextDataFromApi(page);
+                // or loadNextDataFromApi(totalItemsCount);
+                return true; // ONLY if more data is actually being loaded; false otherwise.
+            }
+        });
     }
 
     @Override
@@ -101,7 +115,8 @@ public class SearchActivity extends AppCompatActivity implements SearchFiltersDi
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // perform query here
-
+                queryString = query;
+                adapter.clear();
                 AsyncHttpClient client = new AsyncHttpClient();
                 String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
 
@@ -123,6 +138,7 @@ public class SearchActivity extends AppCompatActivity implements SearchFiltersDi
                             adapter.addAll(Article.fromJSONArray(articleJsonResults));
                             Log.d("DEBUG", articles.toString());
                         } catch (JSONException e) {
+                            Log.d("DEBUG", "Initial query failed!!!!!!!!");
                             e.printStackTrace();
                         }
                     }
@@ -199,5 +215,42 @@ public class SearchActivity extends AppCompatActivity implements SearchFiltersDi
         SearchFiltersDialogFragment searchFiltersDialogFragment = SearchFiltersDialogFragment.newInstance("Some Title");
 
         searchFiltersDialogFragment.show(fm, "fragment_search_filters");
+    }
+
+    // Append the next page of data into the adapter
+    // This method probably sends out a network request and appends new data items to your adapter.
+    public void loadNextDataFromApi(int offset) {
+        // Send an API request to retrieve appropriate paginated data
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+
+        RequestParams params = new RequestParams();
+
+        params.put("api-key", "f00016086fc44568868f0e0ce191376d");
+        params.put("page", offset);
+        params.put("q", queryString);
+
+        client.get(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("DEBUG", response.toString());
+
+                JSONArray articleJsonResults = null;
+
+                try{
+                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
+                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
+                    adapter.notifyDataSetChanged();
+                    Log.d("DEBUG", articles.toString());
+                } catch (JSONException e) {
+                    Log.d("DEBUG", "Scroll query failed!!!!!!!!");
+                    e.printStackTrace();
+                }
+            }
+        });
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyDataSetChanged()`
     }
 }
