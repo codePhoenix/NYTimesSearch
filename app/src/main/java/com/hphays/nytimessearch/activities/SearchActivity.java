@@ -35,6 +35,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
+import layout.SearchFiltersDialogFragment;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -56,9 +57,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void setupViews() {
-        etQuery = (EditText) findViewById(R.id.etQuery);
         gvResults = (GridView) findViewById(R.id.gvResults);
-        btnSearch = (Button) findViewById(R.id.btnSearch);
         articles = new ArrayList<>();
         adapter = new ArticleArrayAdapter(this, articles);
         gvResults.setAdapter(adapter);
@@ -179,9 +178,13 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void onDetailClick(View view) {
-        // create an intent to display the search options fragment
-        Intent i = new Intent(getApplicationContext(), FragmentActivity.class);
-        // launch the activity
-        startActivity(i);
+        showEditDialog();
+    }
+
+    private void showEditDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        SearchFiltersDialogFragment searchFiltersDialogFragment = SearchFiltersDialogFragment.newInstance("Some Title");
+
+        searchFiltersDialogFragment.show(fm, "fragment_search_filters");
     }
 }
