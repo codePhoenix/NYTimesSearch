@@ -1,7 +1,10 @@
 package layout;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +17,20 @@ import com.hphays.nytimessearch.SearchFilters;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
+
+import org.parceler.Parcels;
+
+import static android.R.attr.fragment;
 // ...
 
-public class SearchFiltersDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+public class SearchFiltersDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener, View.OnClickListener {
 
     CheckBox artCheckbox;
     CheckBox fashionCheckbox;
@@ -33,6 +42,57 @@ public class SearchFiltersDialogFragment extends DialogFragment implements DateP
     EditText launchDatePicker;
 
     SearchFilters filters;
+
+    @Override
+    public void onClick(View view) {
+        if (artCheckbox.isChecked()) {
+            filters.setArts(true);
+        } else {
+            filters.setArts(false);
+        }
+
+        if (fashionCheckbox.isChecked()) {
+            filters.setFashionAndStyle(true);
+        } else {
+            filters.setFashionAndStyle(false);
+        }
+
+        if (sportsCheckbox.isChecked()) {
+            filters.setSports(true);
+        } else {
+            filters.setSports(false);
+        }
+
+        if (newest.isChecked()) {
+            filters.setNewest(true);
+        } else {
+            filters.setNewest(false);
+        }
+
+        if (oldest.isChecked()) {
+            filters.setOldest(true);
+        } else {
+            filters.setOldest(false);
+        }
+
+
+
+        //pass filters object back to the activity
+        // Return input text back to activity through the implemented listener
+        EditNameDialogListener listener = (EditNameDialogListener) getActivity();
+        listener.onFinishEditDialog(Parcels.wrap(filters));
+        // Close the dialog and return back to the parent activity
+        dismiss();
+
+
+        //close the fragment
+    }
+
+    public interface EditNameDialogListener {
+        void onFinishEditDialog(Parcelable filters);
+    }
+
+
 
     public SearchFiltersDialogFragment() {
         // Empty constructor is required for DialogFragment
@@ -80,42 +140,7 @@ public class SearchFiltersDialogFragment extends DialogFragment implements DateP
             }
         });
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                if (artCheckbox.isChecked()) {
-                    filters.setArts(true);
-                } else {
-                    filters.setArts(false);
-                }
-
-                if (fashionCheckbox.isChecked()) {
-                    filters.setFashionAndStyle(true);
-                } else {
-                    filters.setFashionAndStyle(false);
-                }
-
-                if (sportsCheckbox.isChecked()) {
-                    filters.setSports(true);
-                } else {
-                    filters.setSports(false);
-                }
-
-                if (newest.isChecked()) {
-                    filters.setNewest(true);
-                } else {
-                    filters.setNewest(false);
-                }
-
-                if (oldest.isChecked()) {
-                    filters.setOldest(true);
-                } else {
-                    filters.setOldest(false);
-                }
-            }
-        });
+        btnSave.setOnClickListener(this);
     }
     // attach to an onclick handler to show the date picker
     public void showDatePickerDialog(View v) {

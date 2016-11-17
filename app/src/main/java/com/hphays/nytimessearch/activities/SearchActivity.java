@@ -2,6 +2,7 @@ package com.hphays.nytimessearch.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.*;
@@ -19,11 +20,12 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
 import android.support.v7.widget.SearchView;
-
+import android.os.Parcel;
 
 import com.hphays.nytimessearch.Article;
 import com.hphays.nytimessearch.ArticleArrayAdapter;
 import com.hphays.nytimessearch.R;
+import com.hphays.nytimessearch.SearchFilters;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -31,13 +33,14 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 import layout.SearchFiltersDialogFragment;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements SearchFiltersDialogFragment.EditNameDialogListener {
 
     EditText etQuery;
     GridView gvResults;
@@ -45,6 +48,16 @@ public class SearchActivity extends AppCompatActivity {
 
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
+
+    // 3. This method is invoked in the activity when the listener is triggered
+    // Access the data result passed to the activity here
+
+    public void onFinishEditDialog(Parcelable filters) {
+        //Do Something;
+        SearchFilters searchFilters =  (SearchFilters) Parcels.unwrap(filters);
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
