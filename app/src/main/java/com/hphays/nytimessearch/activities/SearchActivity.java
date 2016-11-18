@@ -52,14 +52,6 @@ public class SearchActivity extends AppCompatActivity implements SearchFiltersDi
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
 
-    // 3. This method is invoked in the activity when the listener is triggered
-    // Access the data result passed to the activity here
-
-    public void onFinishEditDialog(Parcelable filters) {
-        //Do Something;
-        searchFilters =  (SearchFilters) Parcels.unwrap(filters);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,44 +181,11 @@ public class SearchActivity extends AppCompatActivity implements SearchFiltersDi
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-     /*   if (id == R.id.action_settings) {
+         // if (id == R.id.action_settings) {
             return true;
-        } */
+        }
 
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void onArticleSearch(View view) {
-        String query = etQuery.getText().toString();
-
-       // Toast.makeText(this, "Searching for " + query, Toast.LENGTH_LONG).show();
-
-        AsyncHttpClient client = new AsyncHttpClient();
-        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-
-        RequestParams params = new RequestParams();
-
-        params.put("api-key", "f00016086fc44568868f0e0ce191376d");
-        params.put("page", 0);
-        params.put("q", query);
-
-        client.get(url, params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("DEBUG", response.toString());
-
-                JSONArray articleJsonResults = null;
-
-                try{
-                    articleJsonResults = response.getJSONObject("response").getJSONArray("docs");
-                    adapter.addAll(Article.fromJSONArray(articleJsonResults));
-                    Log.d("DEBUG", articles.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+        //return super.onOptionsItemSelected(item);
 
     public void onDetailClick(View view) {
         showEditDialog();
@@ -252,6 +211,30 @@ public class SearchActivity extends AppCompatActivity implements SearchFiltersDi
         params.put("page", offset);
         params.put("q", queryString);
 
+        if (searchFilters.isArts()) {
+            params.put("fq", "news_desk:(\\\"Arts\\\")");
+        }
+
+        if (searchFilters.isFashionAndStyle()) {
+            params.put("fq", "news_desk:(\\\"Fashion & Style\\\")");
+        }
+
+        if (searchFilters.isSports()) {
+            params.put("fq", "news_desk:(\\\"Sports\\\")");
+        }
+
+        if (searchFilters.isOldest()) {
+            params.put("sort", "oldest");
+        }
+
+        if (searchFilters.isNewest()) {
+            params.put("sort", "newest");
+        }
+
+        if (searchFilters.getBeginDate() != null) {
+            params.put("begin_date", searchFilters.getBeginDate());
+        }
+
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -265,7 +248,6 @@ public class SearchActivity extends AppCompatActivity implements SearchFiltersDi
                     adapter.notifyDataSetChanged();
                     Log.d("DEBUG", articles.toString());
                 } catch (JSONException e) {
-                    Log.d("DEBUG", "Scroll query failed!!!!!!!!");
                     e.printStackTrace();
                 }
             }
@@ -274,5 +256,10 @@ public class SearchActivity extends AppCompatActivity implements SearchFiltersDi
         //  --> Deserialize and construct new model objects from the API response
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyDataSetChanged()`
+    }
+
+    public void onFinishEditDialog(Parcelable filters) {
+
+        searchFilters =  (SearchFilters) Parcels.unwrap(filters);
     }
 }
