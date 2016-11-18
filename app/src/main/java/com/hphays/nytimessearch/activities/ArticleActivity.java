@@ -39,9 +39,7 @@ public class ArticleActivity extends AppCompatActivity {
             }
         });
         webView.loadUrl(url.getWebUrl());
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -51,6 +49,8 @@ public class ArticleActivity extends AppCompatActivity {
 
         MenuItem item = menu.findItem(R.id.menu_item_share);
         ShareActionProvider miShareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
+
 
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");

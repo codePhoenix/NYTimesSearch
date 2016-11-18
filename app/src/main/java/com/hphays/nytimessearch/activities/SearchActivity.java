@@ -48,7 +48,7 @@ public class SearchActivity extends AppCompatActivity implements SearchFiltersDi
     String queryString;
     GridView gvResults;
     Button btnSearch;
-
+    SearchFilters searchFilters = new SearchFilters();
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
 
@@ -57,10 +57,8 @@ public class SearchActivity extends AppCompatActivity implements SearchFiltersDi
 
     public void onFinishEditDialog(Parcelable filters) {
         //Do Something;
-        SearchFilters searchFilters =  (SearchFilters) Parcels.unwrap(filters);
+        searchFilters =  (SearchFilters) Parcels.unwrap(filters);
     }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +123,30 @@ public class SearchActivity extends AppCompatActivity implements SearchFiltersDi
                 params.put("api-key", "f00016086fc44568868f0e0ce191376d");
                 params.put("page", 0);
                 params.put("q", query);
+
+                if (searchFilters.isArts()) {
+                    params.put("fq", "news_desk:(\\\"Arts\\\")");
+                }
+
+                if (searchFilters.isFashionAndStyle()) {
+                    params.put("fq", "news_desk:(\\\"Fashion & Style\\\")");
+                }
+
+                if (searchFilters.isSports()) {
+                    params.put("fq", "news_desk:(\\\"Sports\\\")");
+                }
+
+                if (searchFilters.isOldest()) {
+                    params.put("sort", "oldest");
+                }
+
+                if (searchFilters.isNewest()) {
+                    params.put("sort", "newest");
+                }
+
+                if (searchFilters.getBeginDate() != null) {
+                    params.put("begin_date", searchFilters.getBeginDate());
+                }
 
                 client.get(url, params, new JsonHttpResponseHandler() {
                     @Override

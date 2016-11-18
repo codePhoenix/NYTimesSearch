@@ -16,6 +16,33 @@ public class SearchFilters {
     boolean fashionAndStyle;
     boolean sports;
 
+    public String getBeginDate() {
+        return beginDate;
+    }
+
+    public boolean isArts() {
+        return arts;
+    }
+
+    public boolean isFashionAndStyle() {
+        return fashionAndStyle;
+    }
+
+    public boolean isSports() {
+        return sports;
+    }
+
+    public boolean isNewest() {
+        return newest;
+    }
+
+    public boolean isOldest() {
+        return oldest;
+    }
+
+    boolean newest;
+    boolean oldest;
+
     public void setBeginDate(String beginDate) {
         this.beginDate = beginDate;
     }
@@ -36,13 +63,13 @@ public class SearchFilters {
         this.newest = newest;
     }
 
-    boolean newest;
+
 
     public void setOldest(boolean oldest) {
         this.oldest = oldest;
     }
 
-    boolean oldest;
+
 
 
     //empty constructor needed by parceler library
