@@ -38,6 +38,7 @@ public class ArticleActivity extends AppCompatActivity {
                 return true;
             }
         });
+        getSupportActionBar().setTitle("Article Browser");
         webView.loadUrl(url.getWebUrl());
     }
 

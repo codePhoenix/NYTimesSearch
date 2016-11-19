@@ -60,6 +60,8 @@ public class SearchActivity extends AppCompatActivity implements SearchFiltersDi
         setSupportActionBar(toolbar);
 
         setupViews();
+        getSupportActionBar().setTitle("NY Times Article Search");
+
     }
 
     public void setupViews() {
@@ -116,15 +118,18 @@ public class SearchActivity extends AppCompatActivity implements SearchFiltersDi
                 params.put("page", 0);
                 params.put("q", query);
 
-                if (searchFilters.isArts()) {
+
+                if(searchFilters.isArts() && searchFilters.isFashionAndStyle() && searchFilters.isSports()) {
+                    params.put("fq", "news_desk:(\\\"Arts\\\" \\\"Fashion & Style\\\" \\\"Sports\\\")");
+                } else if (searchFilters.isArts() && searchFilters.isFashionAndStyle()) {
+                    params.put("fq", "news_desk:(\\\"Arts\\\" \\\"Fashion & Style\\\")");
+                } else if (searchFilters.isArts() && searchFilters.isSports()) {
+                    params.put("fq", "news_desk:(\\\"Arts\\\" \\\"Sports\\\")");
+                } else if (searchFilters.isArts()) {
                     params.put("fq", "news_desk:(\\\"Arts\\\")");
-                }
-
-                if (searchFilters.isFashionAndStyle()) {
+                } else if (searchFilters.isFashionAndStyle()) {
                     params.put("fq", "news_desk:(\\\"Fashion & Style\\\")");
-                }
-
-                if (searchFilters.isSports()) {
+                } else if (searchFilters.isSports()) {
                     params.put("fq", "news_desk:(\\\"Sports\\\")");
                 }
 
